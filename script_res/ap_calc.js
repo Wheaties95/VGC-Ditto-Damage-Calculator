@@ -1780,6 +1780,7 @@ function calculate() {
     bestResult.change();
     $("#resultHeaderL").text(p1.name + "'s Moves (select one to show detailed results)");
     $("#resultHeaderR").text(p2.name + "'s Moves (select one to show detailed results)");
+    updateChampionsP1Bulk(p1, p2, field);
 }
 
 $(".result-move").change(function() {
