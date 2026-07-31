@@ -35,14 +35,14 @@ function createBulkAttackDummy(opponentMon) {
 	var specialMove = $.extend({}, moves['Thunderbolt'], {
 		name: 'Thunderbolt',
 		bp: 999,
-		type: '???',
+		type: 'Typeless',
 		category: 'Special',
 		hits: 1
 	});
 	var physicalMove = $.extend({}, moves['Body Slam'], {
 		name: 'Body Slam',
 		bp: 999,
-		type: '???',
+		type: 'Typeless',
 		category: 'Physical',
 		hits: 1
 	});
@@ -65,6 +65,9 @@ function createBulkAttackDummy(opponentMon) {
 		curHP: rawStats.hp,
 		rawStats: rawStats,
 		boosts: { hp: 0, at: 0, df: 0, sa: 0, sd: 0, sp: opponentMon.boosts.sp },
+		sps: { hp: 0, at: 0, df: 0, sa: 0, sd: 0, sp: 0 },
+		evs: { hp: 0, at: 0, df: 0, sa: 0, sd: 0, sp: 0 },
+		ivs: { hp: 31, at: 31, df: 31, sa: 31, sd: 31, sp: 31 },
 		stats: {},
 		highestStat: -1,
 		moves: [specialMove, physicalMove, none, none],
@@ -77,7 +80,7 @@ function damageMinRoll(result, hits) {
 }
 
 /** @returns {[number, number]} [physical bulk, special bulk] */
-function calcBulk(defender, results, attackerSideIndex) {
+function calcBulkFromResults(defender, results, attackerSideIndex) {
 	var spDamage = damageMinRoll(results[attackerSideIndex][0], results[attackerSideIndex][0].hits);
 	var physDamage = damageMinRoll(results[attackerSideIndex][1], results[attackerSideIndex][1].hits);
 	if (!spDamage) spDamage = 1;
@@ -123,15 +126,91 @@ function calculateAllMovesNoBoost(p1Defender, attackerDummy, field) {
 	return results;
 }
 
-function updateChampionsP1Bulk(p1, p2, field) {
-	if (!$('#p1BulkPhys').length || gen != 10) return;
-	var p1c = JSON.parse(JSON.stringify(p1));
-	var p2c = JSON.parse(JSON.stringify(p2));
-	p1c.hasType = setHasTypeFunc;
-	p2c.hasType = setHasTypeFunc;
-	var attackerDummy = createBulkAttackDummy(p2c);
-	var results = calculateAllMovesNoBoost(p1c, attackerDummy, field);
-	var bulk = calcBulk(p1c, results, 1);
-	$('#p1BulkPhys').val(String(bulk[0]));
-	$('#p1BulkSpec').val(String(bulk[1]));
+function updateOneMonBulk(defender, opponent, field, sideId) {
+	var defenderC = JSON.parse(JSON.stringify(defender));
+	var opponentC = JSON.parse(JSON.stringify(opponent));
+	defenderC.hasType = setHasTypeFunc;
+	opponentC.hasType = setHasTypeFunc;
+
+	var attackerDummy = createBulkAttackDummy(opponentC);
+	var results = calculateAllMovesNoBoost(defenderC, attackerDummy, field);
+	var bulk = calcBulkFromResults(defenderC, results, 1);
+	$(sideId + ' .bdf').text(String(bulk[0]));
+	$(sideId + ' .bsd').text(String(bulk[1]));
+}
+
+function updateAllChampionsBulk(p1, p2, field) {
+	if (gen != 10) return;
+	updateOneMonBulk(p1, p2, field, '#p1');
+	updateOneMonBulk(p2, p1, field, '#p2');
+}
+
+/**
+ * Power ratings for Champions: min-roll damage each move deals to a standardized, neutral
+ * Ditto target (0 boosts, no item/ability, 31 IVs, 0 EVs/SPs, Typeless type), using the mon's
+ * real ability/item/boosts/status/tera/dynamax and the real field/side conditions.
+ */
+function createPowerTargetDummy(opponentMon) {
+	var types = bulkDummyTypes(opponentMon);
+	var rawStats = dittoBulkRawStats();
+	var hpPercent = opponentMon.curHP / opponentMon.maxHP;
+	var none = { name: '(No Move)', bp: 0, type: 'Normal', category: 'Status', hits: 1 };
+	return {
+		name: 'Ditto',
+		type1: types[0],
+		type2: types.length > 1 ? types[1] : '',
+		level: opponentMon.level,
+		ability: opponentMon.ability,
+		abilityOn: opponentMon.abilityOn,
+		nature: 'Hardy',
+		status: opponentMon.status,
+		toxicCounter: opponentMon.toxicCounter,
+		isDynamaxed: opponentMon.isDynamaxed,
+		isTerastalize: opponentMon.isTerastalize,
+		tera_type: opponentMon.tera_type,
+		gmax_factor: opponentMon.gmax_factor,
+		item: opponentMon.item,
+		weight: opponentMon.weight,
+		maxHP: rawStats.hp,
+		curHP: Math.max(0, Math.round(rawStats.hp * hpPercent)),
+		rawStats: rawStats,
+		boosts: { hp: 0, at: 0, df: 0, sa: 0, sd: 0, sp: opponentMon.boosts.sp },
+		sps: { hp: 0, at: 0, df: 0, sa: 0, sd: 0, sp: 0 },
+		evs: { hp: 0, at: 0, df: 0, sa: 0, sd: 0, sp: 0 },
+		ivs: { hp: 31, at: 31, df: 31, sa: 31, sd: 31, sp: 31 },
+		stats: {},
+		highestStat: -1,
+		moves: [none, none, none, none],
+		hasType: setHasTypeFunc
+	};
+}
+
+/** @returns {number[]} min-roll damage for each of the attacker's 4 moves vs the standardized target */
+function calculatePowerForSide(realAttacker, opponent, attackerSideIndex, field) {
+	var attacker = JSON.parse(JSON.stringify(realAttacker));
+	attacker.hasType = setHasTypeFunc;
+	var targetSideIndex = 1 - attackerSideIndex;
+	var target = createPowerTargetDummy(opponent);
+
+	prepMonForBulkDamage(attacker, attackerSideIndex, field);
+	prepMonForBulkDamage(target, targetSideIndex, field);
+
+	var side = field.getSide(targetSideIndex);
+	var powers = [];
+	for (var i = 0; i < 4; i++) {
+		var move = attacker.moves[i];
+		var result = GET_DAMAGE_SV(attacker, target, move, side);
+		powers.push(calcMinMaxDamage(result.damage, move.hits || 1)[0]);
+	}
+	return powers;
+}
+
+function updateAllChampionsPower(p1, p2, field) {
+	if (gen != 10) return;
+	var p1Powers = calculatePowerForSide(p1, p2, 0, field);
+	var p2Powers = calculatePowerForSide(p2, p1, 1, field);
+	for (var i = 0; i < 4; i++) {
+		$('#resultPowerL' + (i + 1)).text(String(p1Powers[i]));
+		$('#resultPowerR' + (i + 1)).text(String(p2Powers[i]));
+	}
 }
