@@ -52,6 +52,7 @@
                     <input class="gen btn-input" type="radio" name="gen" value="9" id="gen9" /><label class="btn btn-small btn-mid" for="gen9">S/V</label>
                     <input class="gen btn-input" type="radio" name="gen" value="10" id="gen10" checked="checked" /><label class="btn btn-small btn-right" for="gen10">CHAMP</label>
                 </span>
+                <span style="float:right;"><a href="lgpe-calc.html">Let's Go Pikachu/Eevee</a> | <a href="za-calc.html">Legends: Z-A</a></span>
             </div>
             <hr />
             <p><br /><br /></p>
@@ -64,10 +65,11 @@
         <script>
             (adsbygoogle = window.adsbygoogle || []).push({});
         </script>-->
-            <p>Our new Legends Z-A Damage Calculator is now live! Check it out <a href="za-calc.html"><b>here</b></a>! We also have a Let's Go Pikachu/Eevee Damage Calculator <a href="lgpe-calc.html"><b>here</b></a>.</p>
+            <!--<p>Our new Legends Z-A Damage Calculator is now live! Check it out <a href="za-calc.html"><b>here</b></a>! We also have a Let's Go Pikachu/Eevee Damage Calculator <a href="lgpe-calc.html"><b>here</b></a>.</p>-->
             <p>VGC 2026 calculator maintainenance by Alex Collins (<a href="https://twitter.com/nerd_of_now">@nerd_of_now</a>). Basis of the calculator by Jake White (<a href="https://twitter.com/squirrelboydev" target="_blank" rel="noopener noreferrer">@squirrelboydev</a>).</p>
             <p>
-                Regulation Set M-B support for Champions has been added! This includes new items, moves, abilities, and Pokémon. Sets are on the way!
+                New Pokémon, items, moves, and abilities from Champions' Regulation M-C have been added, as have some relevant sets!
+                <!--Regulation Set M-B support for Champions has been added! This includes new items, moves, abilities, and Pokémon. Sets are on the way!-->
                 <!--With VGC 2018 getting its own ladder for the month, Gen 7 sets have been updated to be better tuned to the format!-->
                 <!--<br><b><u>This calculator contains spoilers for the Indigo Disk DLC.</u></b> This includes Pokémon, moves, abilities, items, and the new Tera Type. Use at your own discretion.-->
             </p>
@@ -443,7 +445,7 @@
                             <input class="btn-input calc-trigger" type="checkbox" id="leechSeedR" /><label class="btn btn-xwide" for="leechSeedR">Leech Seed</label>
                         </div>
                     </div>
-                    <div class="btn-group gen-specific g5 g6 g7 g8 g9">
+                    <div class="btn-group gen-specific g5 g6 g7 g8 g9 natdex-specific n10">
                         <div class="left" title="Has the opponent set up a sea of fire?">
                             <input class="btn-input calc-trigger" type="checkbox" id="seaFireL" /><label class="btn btn-wide btn-left" for="seaFireL">Sea of Fire</label>
                         </div>
@@ -503,7 +505,7 @@
                             <input class="btn-input calc-trigger" type="checkbox" id="flowerGiftR" /><label class="btn btn-xxwide" for="flowerGiftR">Flower Gift</label>
                         </div>
                     </div>
-                    <div class="btn-group gen-specific g8 g9">
+                    <div class="btn-group gen-specific g8 g9 g10">
                         <div class="left" title="Does this Pokémon's ally have Steely Spirit?">
                             <input class="btn-input calc-trigger" type="checkbox" id="steelySpiritL" /><label class="btn btn-xwide" for="steelySpiritL">Steely Spirit</label>
                         </div>
@@ -511,7 +513,7 @@
                             <input class="btn-input calc-trigger" type="checkbox" id="steelySpiritR" /><label class="btn btn-xwide" for="steelySpiritR">Steely Spirit</label>
                         </div>
                     </div>
-                    <div class="btn-group gen-specific g8 g9">
+                    <div class="btn-group gen-specific g8 g9 natdex-specific n10">
                         <div class="left" title="Is this Pokémon boosted by an ally's Power Spot?">
                             <input class="btn-input calc-trigger" type="checkbox" id="powerSpotL" /><label class="btn btn-xwide" for="powerSpotL">Power Spot</label>
                         </div>
@@ -519,7 +521,7 @@
                             <input class="btn-input calc-trigger" type="checkbox" id="powerSpotR" /><label class="btn btn-xwide" for="powerSpotR">Power Spot</label>
                         </div>
                     </div>
-                    <div class="btn-group gen-specific g7 g8 g9">
+                    <div class="btn-group gen-specific g7 g8 g9 natdex-specific n10">
                         <div class="left" title="Has this Pokémon's power been boosted by an ally's Battery?">
                             <input class="btn-input calc-trigger" type="checkbox" id="batteryL" /><label class="btn btn-xwide" for="batteryL">Battery</label>
                         </div>
@@ -599,7 +601,7 @@
                             <input class="btn-input calc-trigger" type="checkbox" id="chargeR" /><label class="btn btn-wide" for="chargeR">Charge</label>
                         </div>
                     </div>
-                    <div class="btn-group gen-specific g2 g3 g4 g5 g6 g7">
+                    <div class="btn-group gen-specific g2 g3 g4 g5 g6 g7 natdex-specific n8 n9 n10">
                         <div class="left" title="Has this Pokémon been revealed with Foresight or Odor Sleuth?">
                             <input class="btn-input calc-trigger" type="checkbox" id="foresightL" /><label class="btn btn-wide" for="foresightL">Foresight</label>
                         </div>
@@ -615,7 +617,7 @@
                             <input class="btn-input calc-trigger" type="checkbox" id="aquaRingR" /><label class="btn btn-wide" for="aquaRingR">Aqua Ring</label>
                         </div>
                     </div>
-                    <div class="btn-group gen-specific g2 g3 g4 g5 g6 g7">
+                    <div class="btn-group gen-specific g2 g3 g4 g5 g6 g7 natdex-specific n8 n9 n10">
                         <div class="left" title="Has this Pokémon been afflicted with a Nightmare?">
                             <input class="btn-input calc-trigger" type="checkbox" id="nightmareL" /><label class="btn btn-wide" for="nightmareL">Nightmare</label>
                         </div>
